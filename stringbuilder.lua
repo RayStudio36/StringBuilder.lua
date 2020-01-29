@@ -1,6 +1,6 @@
 ---
 --- StringBuilder v0.1 by yangruihan
---- See https://github.com/RayStudio36/array for usage documentation.
+--- See https://github.com/RayStudio36/StringBuilder.lua for usage documentation.
 --- Licensed under MIT.
 --- See https://opensource.org/licenses/MIT for details.
 ---
