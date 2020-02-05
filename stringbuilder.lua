@@ -61,12 +61,12 @@ function StringBuilder:append_array(array, seperator)
 end
 
 
-function StringBuilder:append_table(table, seperator)
-    if not table then return self end
+function StringBuilder:append_table(t, seperator)
+    if not t then return self end
 
     local cnt = 0
     seperator = seperator or ', '
-    for k, v in pairs(table) do
+    for k, v in pairs(t) do
         cnt = cnt + 1
         table.insert(self.buffer,
                      string.format('{%s: %s}%s',
