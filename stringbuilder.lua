@@ -1,99 +1,108 @@
 ---
---- StringBuilder v0.1 by yangruihan
+--- StringBuilder v0.2 by yangruihan
 --- See https://github.com/RayStudio36/StringBuilder.lua for usage documentation.
 --- Licensed under MIT.
 --- See https://opensource.org/licenses/MIT for details.
 ---
 
-
+---@class StringBuilder
 local StringBuilder = {}
 
 StringBuilder.__index = StringBuilder
 
-setmetatable(StringBuilder, {
-    __call = function (class, ...)
-        local instance = {}
-        setmetatable(instance, StringBuilder)
-        instance:new(...)
-        return instance
-    end
-})
-
+setmetatable(
+    StringBuilder,
+    {
+        __call = function(class, ...)
+            local instance = {}
+            setmetatable(instance, StringBuilder)
+            instance:new(...)
+            return instance
+        end
+    }
+)
 
 function StringBuilder:new()
-    self.buffer = {}
+    self._buffer = {}
 end
-
 
 function StringBuilder:append(...)
-    local args = {...}
-    for i = 1, #args do
-        table.insert(self.buffer, args[i])
+    for i = 1, select("#", ...) do
+        table.insert(self._buffer, tostring(select(i, ...)))
     end
     return self
 end
 
+---@param format string
+function StringBuilder:append_format(format, ...)
+    table.insert(self._buffer, format:format(...))
+end
 
 function StringBuilder:append_line(...)
-    local args = {...}
-    for i = 1, #args do
-        table.insert(self.buffer, args[i])
-        table.insert(self.buffer, '\n')
+    local len = select("#", ...)
+    if len > 0 then
+        for i = 1, len do
+            table.insert(self._buffer, tostring(select(i, ...)))
+            table.insert(self._buffer, "\n")
+        end
+    else
+        table.insert(self._buffer, "\n")
     end
-    table.insert(self.buffer, '\n')
     return self
 end
 
-
+---@param array table
+---@param seperator string
 function StringBuilder:append_array(array, seperator)
-    if not array then return self end
+    if not array then
+        return self
+    end
 
-    seperator = seperator or ', '
+    seperator = seperator or ", "
     for i, v in ipairs(array) do
         if i == #array then
-            table.insert(self.buffer, string.format('%d: %s', i, tostring(v)))
+            table.insert(self._buffer, string.format("%d: %s", i, tostring(v)))
         else
-            table.insert(self.buffer,
-                         string.format('%d: %s%s', i, tostring(v), seperator))
+            table.insert(self._buffer, string.format("%d: %s%s", i, tostring(v), seperator))
         end
     end
     return self
 end
 
-
+---@param t table
+---@param seperator string
 function StringBuilder:append_table(t, seperator)
-    if not t then return self end
+    if not t then
+        return self
+    end
 
     local cnt = 0
-    seperator = seperator or ', '
+    seperator = seperator or ", "
     for k, v in pairs(t) do
         cnt = cnt + 1
-        table.insert(self.buffer,
-                     string.format('{%s: %s}%s',
-                                   tostring(k),
-                                   tostring(v), seperator))
+        table.insert(self._buffer, string.format("{%s: %s}%s", tostring(k), tostring(v), seperator))
     end
 
     if cnt > 0 then
-        local last_str = self.buffer[#self.buffer]
-        self.buffer[#self.buffer] =  last_str:sub(1, #last_str - #seperator)
+        local last_str = self._buffer[#self._buffer]
+        self._buffer[#self._buffer] = last_str:sub(1, #last_str - #seperator)
     end
 
     return self
 end
 
-
+---@param clear boolean will clear buffer, default false
 function StringBuilder:tostring(clear)
     clear = clear or false
-    local ret = table.concat(self.buffer)
-    if clear then self:clear() end
+    local ret = table.concat(self._buffer)
+    if clear then
+        self:clear()
+    end
     return ret
 end
 
-
 function StringBuilder:clear()
-    self.buffer = {}
+    self._buffer = {}
 end
-
 
 return StringBuilder

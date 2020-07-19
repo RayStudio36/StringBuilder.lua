@@ -1,4 +1,4 @@
-# StringBuilder
+# StringBuilder v0.2
 
 StringBuilder module for lua
 
@@ -16,6 +16,7 @@ StringBuilder = require 'stringbuilder'
 sb = StringBuilder()
 sb:append(1):append('hello'):append(true)
 sb:append(1, 2, 3)
+sb:append_format('%d%s', 1, 'hello')
 sb:append_line(1, 2, 3)
 sb:append_array({1, 2, 3}, ', ')
 sb:append_table({a=1, b=2, c=3}, ', ')
